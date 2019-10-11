@@ -1,4 +1,6 @@
 package com.lambdaschool.todos.views;
 
-public class JustTheCount {
+public interface JustTheCount
+{
+    int getCount();
 }

@@ -1,8 +1,8 @@
 package com.lambdaschool.todos;
 
-import com.lambdaschool.todo.models.*;
-import com.lambdaschool.todo.services.RoleService;
-import com.lambdaschool.todo.services.UserService;
+import com.lambdaschool.todos.models.*;
+import com.lambdaschool.todos.services.RolesService;
+import com.lambdaschool.todos.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -12,23 +12,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+
 @Transactional
 @Component
 public class SeedData implements CommandLineRunner
 {
     @Autowired
-    RoleService roleService;
+    RolesService roleService;
 
     @Autowired
-    UserService userService;
+    UsersService userService;
 
 
     @Override
     public void run(String[] args) throws Exception
     {
-        Role r1 = new Role("admin");
-        Role r2 = new Role("user");
-        Role r3 = new Role("data");
+        Roles r1 = new Roles("admin");
+        Roles r2 = new Roles("user");
+        Roles r3 = new Roles("data");
 
         roleService.save(r1);
         roleService.save(r2);
@@ -36,13 +37,13 @@ public class SeedData implements CommandLineRunner
 
         // admin, data, user
         ArrayList<UserRoles> admins = new ArrayList<>();
-        admins.add(new UserRoles(new User(),
+        admins.add(new UserRoles(new Users(),
                                  r1));
-        admins.add(new UserRoles(new User(),
+        admins.add(new UserRoles(new Users(),
                                  r2));
-        admins.add(new UserRoles(new User(),
+        admins.add(new UserRoles(new Users(),
                                  r3));
-        User u1 = new User("admin",
+        Users u1 = new Users("admin",
                            "password",
                            "admin@lambdaschool.local",
                            admins);
@@ -60,11 +61,11 @@ public class SeedData implements CommandLineRunner
 
         // data, user
         ArrayList<UserRoles> datas = new ArrayList<>();
-        datas.add(new UserRoles(new User(),
+        datas.add(new UserRoles(new Users(),
                                 r3));
-        datas.add(new UserRoles(new User(),
+        datas.add(new UserRoles(new Users(),
                                 r2));
-        User u2 = new User("cinnamon",
+        Users u2 = new Users("cinnamon",
                            "1234567",
                            "cinnamon@lambdaschool.local",
                            datas);
@@ -83,9 +84,9 @@ public class SeedData implements CommandLineRunner
 
         // user
         ArrayList<UserRoles> users = new ArrayList<>();
-        users.add(new UserRoles(new User(),
+        users.add(new UserRoles(new Users(),
                                 r2));
-        User u3 = new User("barnbarn",
+        Users u3 = new Users("barnbarn",
                            "ILuvM4th!",
                            "barnbarn@lambdaschool.local",
                            users);
@@ -95,18 +96,18 @@ public class SeedData implements CommandLineRunner
         userService.save(u3);
 
         users = new ArrayList<>();
-        users.add(new UserRoles(new User(),
+        users.add(new UserRoles(new Users(),
                                 r2));
-        User u4 = new User("puttat",
+        Users u4 = new Users("puttat",
                            "password",
                            "puttat@school.lambda",
                            users);
         userService.save(u4);
 
         users = new ArrayList<>();
-        users.add(new UserRoles(new User(),
+        users.add(new UserRoles(new Users(),
                                 r2));
-        User u5 = new User("misskitty",
+        Users u5 = new Users("misskitty",
                            "password",
                            "misskitty@school.lambda",
                            users);

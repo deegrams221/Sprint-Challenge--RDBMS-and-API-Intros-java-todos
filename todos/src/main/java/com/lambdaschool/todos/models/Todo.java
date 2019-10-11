@@ -3,6 +3,7 @@ package com.lambdaschool.todos.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -40,12 +41,10 @@ public class Todo extends Auditable
     // constructors
     public Todo(String description,
                 Date datestrated,
-                boolean completed,
                 Users users)
     {
         this.description = description;
         this.datestrated = datestrated;
-        this.completed = completed;
         this.users = users;
     }
 
@@ -98,5 +97,10 @@ public class Todo extends Auditable
     public void setUsers(Users users)
     {
         this.users = users;
+    }
+
+    @Override
+    public Collection<Todo> getTodos() {
+        return null;
     }
 }
