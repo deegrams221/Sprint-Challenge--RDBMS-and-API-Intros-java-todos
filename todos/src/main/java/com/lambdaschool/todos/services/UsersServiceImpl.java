@@ -1,5 +1,6 @@
 package com.lambdaschool.todos.services;
 
+import com.lambdaschool.todos.models.Todo;
 import com.lambdaschool.todos.models.UserRoles;
 import com.lambdaschool.todos.models.Useremail;
 import com.lambdaschool.todos.models.Users;
@@ -76,6 +77,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService
         {
             newUser.getUseremails()
                     .add(new Useremail(newUser, ue.getUseremail()));
+        }
+
+        for (Todo t : users.getTodos())
+        {
+            newUser.getTodos().add(new Todo(t.getDescription(), t.getDatestrated(), newUser));
         }
 
         return userrepos.save(newUser);

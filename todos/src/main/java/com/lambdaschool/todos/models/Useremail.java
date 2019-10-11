@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.Collection;
 
 @Entity
 @Table(name = "useremails", uniqueConstraints =
@@ -30,14 +31,10 @@ public class Useremail extends Auditable
     }
 
     // constructors
-    public Useremail(@Email String useremail, Users users)
+    public Useremail(String useremail, Users users)
     {
         this.useremail = useremail;
         this.users = users;
-    }
-
-    public Useremail(Users newUser, String useremail) {
-        super();
     }
 
     // getters and setters
@@ -78,7 +75,7 @@ public class Useremail extends Auditable
         return "Useremail{" +
                 "useremailid=" + useremailid +
                 ", useremail='" + useremail + '\'' +
-                ", users=" + users +
+                ", users=" + users.getUsername() +
                 '}';
     }
 }

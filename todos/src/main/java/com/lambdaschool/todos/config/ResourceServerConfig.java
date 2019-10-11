@@ -35,6 +35,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
                         "/v2/api-docs",
                         "/webjars/**").permitAll() //Everyone has access to these
                 .antMatchers("/users/**", "/user", "/todos/**").authenticated()
+                .antMatchers("/users/user").hasAnyRole("ADMIN")
+                .antMatchers("/users/userid/**").hasAnyRole("ADMIN")
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
         http.csrf().disable();

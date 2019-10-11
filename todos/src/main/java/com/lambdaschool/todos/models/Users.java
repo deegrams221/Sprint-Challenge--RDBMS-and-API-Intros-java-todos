@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 // Users in considered the parent entity
@@ -42,8 +43,12 @@ public class Users extends Auditable
     private List<UserRoles> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
-    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("users")
+    @JsonIgnoreProperties("users")
     private List<Useremail> useremails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("users")
+    private List<Todo> todos = new ArrayList<>();
 
     // default constructor
     public Users()
@@ -76,6 +81,16 @@ public class Users extends Auditable
     public void setUserid(long userid)
     {
         this.userid = userid;
+    }
+
+    public List<Todo> getTodos()
+    {
+        return todos;
+    }
+
+    public void setTodos(List<Todo> todos)
+    {
+        this.todos = todos;
     }
 
     public String getUsername()
@@ -157,15 +172,17 @@ public class Users extends Auditable
     }
 
     // toString
+
     @Override
-    public String toString()
-    {
-        return "User{" +
+    public String toString() {
+        return "Users{" +
                 "userid=" + userid +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", primaryEmail='" + primaryemail +
-                '\'' + ", userroles=" + userRoles +
-                ", useremails=" + useremails + '}';
+                ", primaryemail='" + primaryemail + '\'' +
+                ", userRoles=" + userRoles +
+                ", useremails=" + useremails +
+                ", todos=" + todos +
+                '}';
     }
 }
