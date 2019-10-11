@@ -5,6 +5,7 @@ import com.lambdaschool.todos.models.UserRoles;
 import com.lambdaschool.todos.models.Useremail;
 import com.lambdaschool.todos.models.Users;
 import com.lambdaschool.todos.repositories.RolesRepository;
+import com.lambdaschool.todos.repositories.TodoRepository;
 import com.lambdaschool.todos.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +28,19 @@ public class UsersServiceImpl implements UsersService, UserDetailsService
     @Autowired
     private RolesRepository rolerepos;
 
+    @Autowired
+    private TodoRepository todorepos;
+
+    public Todo addTodo(Todo todo)
+    {
+        Todo newTodo = new Todo();
+
+        newTodo.setDescription(todo.getDescription());
+        newTodo.setDatestrated(todo.getDatestrated());
+
+        return todorepos.save(newTodo);
+    }
+
     @Transactional
     public Users findUserById(long id) throws EntityNotFoundException
     {
@@ -41,6 +55,16 @@ public class UsersServiceImpl implements UsersService, UserDetailsService
         return list;
     }
 
+    public Users findByName(String name)
+    {
+        Users uu = userrepos.findByUsername(name.toLowerCase());
+        if (uu == null)
+        {
+            throw new EntityNotFoundException("User name " + name + " not found!");
+        }
+        return uu;
+    }
+
     @Override
     public Users findUserByName(String name)
     {
@@ -50,7 +74,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService
         if (currentUser != null)
         {
             return currentUser;
-        } else
+        }
+        else
         {
             throw new EntityNotFoundException(name);
         }
@@ -76,7 +101,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService
         for (Useremail ue : users.getUseremails())
         {
             newUser.getUseremails()
-                    .add(new Useremail(newUser, ue.getUseremail()));
+                    .add(new Useremail(ue.getUseremail(), newUser));
         }
 
         for (Todo t : users.getTodos())
