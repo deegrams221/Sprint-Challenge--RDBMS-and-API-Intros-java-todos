@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class TodoController
-{
+public class TodoController {
+
     @Autowired
     private TodoService todoService;
-    // PUT /todos/todoid/{todoid} - updates a todo based on todoid.
-    //  Can be done by any user. Note: null boolean is not a thing - it is false,
-    //  so just set compeleted to whatever comes across in the RequestBody.
-    // {
-    //    "completed": true
-    // }
+
+//    PUT /todos/todoid/{todoid} - updates a todo based on todoid. Can be done by any user.
+//    Note: null boolean is not a thing - it is false, so just set compeleted to whatever comes across in the RequestBody.
+//    {
+//        "completed": true
+//    }
     @PutMapping(value = "/todos/todoid/{todoid}",
             produces = {"application/json"},
             consumes = {"application/json"})
@@ -29,4 +29,5 @@ public class TodoController
         todoService.update(updatedTodo, todoid);
         return new ResponseEntity<>("UPDATE SUCCESS", HttpStatus.OK);
     }
+
 }

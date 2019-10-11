@@ -1,34 +1,32 @@
 package com.lambdaschool.todos.controllers;
 
-import com.lambdaschool.todos.models.Users;
-import com.lambdaschool.todos.services.UsersService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import com.lambdaschool.todos.models.User;
+import com.lambdaschool.todos.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 
 @RestController
-public class UsersController
-{
+public class UserController {
     @Autowired
-    private UsersService userService;
+    private UserService userService;
 
     // GET /users/mine - return the user and todo based off of the authenticated user.
-    // You can only look up your own. It is okay if this also lists the users roles and
-    // authorities.
+    //  You can only look up your own. It is okay if this also lists the users roles and authorities.
     @GetMapping(value = "/users/mine", produces = {"application/json"})
     public ResponseEntity<?> getUsername(Authentication authentication)
     {
-        return new ResponseEntity<>(userService.findUserByName(authentication.name()), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUserByName(authentication.getName()), HttpStatus.OK);
     }
 
     // POST /users/user - adds a user. Can only be done by an admin.
-    // {
+    //{
     //    "username": "hops",
     //    "password": "password",
     //    "primaryemail" : "hops@bunny.hop",
@@ -49,33 +47,37 @@ public class UsersController
     //            "datestarted": "2019-08-16T01:44:18.089+0000"
     //        }
     //    ]
-    // }
+    //}
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PostMapping(value = "/users/user", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<?> addNewUser(@Valid @RequestBody Users newuser) throws URISyntaxException {
-        newuser = userService.save(newuser);
+    public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
+    {
+        newuser =  userService.save(newuser);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // PUT /users/todo/{userid} - adds a todo to the assigned user.
-    // Can be done by any user. You can add this todo
-    // {
-    //    "description": "Have Fun",
-    //    "datestarted": "2019-01-01T01:00"
-    // }
+//    POST /users/todo/{userid} - adds a todo to the assigned user. Can be done by any user.
+//     You can add this todo:
+//    {
+//        "description": "Have Fun",
+//            "datestarted": "2019-01-01T01:00"
+//    }
     @PutMapping(value = "/users/todo/{userid}",
             produces = {"application/json"},
             consumes = {"application/json"})
-    public ResponseEntity<?> addTodoToUser(@RequestBody Users newUserData,
-                                           @PathVariable long userid) throws URISyntaxException
+    public ResponseEntity<?> addTodoToUser(
+            @RequestBody
+                    User newUserData,
+            @PathVariable
+                    long userid) throws URISyntaxException
     {
         userService.update(newUserData, userid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // DELETE /users/userid/{userid} - Deletes a user based off of their userid and
-    // deletes all their associated todos. Can only be done by an admin.
+//    DELETE /users/userid/{userid} - Deletes a user based off of their userid and deletes
+//    all their associated todos. Can only be done by an admin.
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/users/userid/{userid}",
             produces = {"application/json"})

@@ -61,7 +61,7 @@ public class UseremailServiceImpl implements UseremailService
                     .getAuthentication();
             if (useremailrepos.findById(id)
                     .get()
-                    .getUsers()
+                    .getUser()
                     .getUsername()
                     .equalsIgnoreCase(authentication.getName()) || isAdmin)
             {
@@ -88,7 +88,7 @@ public class UseremailServiceImpl implements UseremailService
         {
             if (useremailrepos.findById(useremailid)
                     .get()
-                    .getUsers()
+                    .getUser()
                     .getUsername()
                     .equalsIgnoreCase(authentication.getName()) || isAdmin)
             {

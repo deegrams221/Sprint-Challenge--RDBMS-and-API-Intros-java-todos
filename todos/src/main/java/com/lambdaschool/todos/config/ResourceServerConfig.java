@@ -17,29 +17,40 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
     @Override
     public void configure(ResourceServerSecurityConfigurer resources)
     {
-        resources.resourceId(RESOURCE_ID).stateless(false);
+        resources.resourceId(RESOURCE_ID)
+                .stateless(false);
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception
     {
         // http.anonymous().disable();
-        http.authorizeRequests()
-                .antMatchers("/",                       // h2
-                        "/h2-console/**",
-                        "/swagger-resources/**",
-                        "/swagger-resources/configuration/ui",
-                        "/swagger-resources/configuration/security",
-                        "/swagger-resource/**",
-                        "/swagger-ui.html",
-                        "/v2/api-docs",
-                        "/webjars/**").permitAll() //Everyone has access to these
-                .antMatchers("/users/**", "/user", "/todos/**").authenticated()
-                .antMatchers("/users/user").hasAnyRole("ADMIN")
-                .antMatchers("/users/userid/**").hasAnyRole("ADMIN")
-                .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+        http.authorizeRequests()
+                .antMatchers("/", "/h2-console/**")
+                .permitAll()
+                .antMatchers("/users/**", "/useremails/**")
+                .authenticated()
+                // restrict application data...
+                // .antMatchers("/books", "/authors").hasAnyRole("ADMIN", "USER", "DATA")
+                // .antMatchers("/data/**").hasAnyRole("ADMIN", "DATA")
+                //
+                // restrict based on HttpMethod and endpoint
+                // .antMatchers(HttpMethod.GET, "/users/user/**").hasAnyRole("USER")
+                .antMatchers("/roles/**", "/admin/**")
+                .hasAnyRole("ADMIN")
+                .antMatchers("/animals/**")
+                .hasAnyRole("ADMIN", "ANIMALDATA", "MGR")
+                .antMatchers("/zoos/**")
+                .hasAnyRole("ADMIN", "ZOODATA", "MGR")
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+
+        http.csrf()
+                .disable();
+        http.headers()
+                .frameOptions()
+                .disable();
     }
 }

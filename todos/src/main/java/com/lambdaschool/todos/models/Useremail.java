@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.util.Collection;
 
 @Entity
-@Table(name = "useremails", uniqueConstraints =
-        {@UniqueConstraint(columnNames = {"userid", "useremail"})})
+@Table(name = "useremails",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"userid", "useremail"})})
 public class Useremail extends Auditable
 {
     @Id
@@ -20,24 +19,22 @@ public class Useremail extends Auditable
     private String useremail;
 
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "userid",
+            nullable = false)
     @JsonIgnoreProperties("useremails")
-    private Users users;
+    private User user;
 
-    // default constructor
     public Useremail()
     {
-
     }
 
-    // constructors
-    public Useremail(String useremail, Users users)
+    public Useremail(User user,
+                     String useremail)
     {
         this.useremail = useremail;
-        this.users = users;
+        this.user = user;
     }
 
-    // getters and setters
     public long getUseremailid()
     {
         return useremailid;
@@ -50,32 +47,34 @@ public class Useremail extends Auditable
 
     public String getUseremail()
     {
-        return useremail.toLowerCase();
+        return useremail;
     }
 
     public void setUseremail(String useremail)
     {
-        this.useremail = useremail.toLowerCase();
+        this.useremail = useremail;
     }
 
-    public Users getUsers()
+    public User getUser()
     {
-        return users;
+        return user;
     }
 
-    public void setUsers(Users users)
+    public void setUser(User user)
     {
-        this.users = users;
+        this.user = user;
     }
 
-    // toString
     @Override
     public String toString()
     {
         return "Useremail{" +
-                "useremailid=" + useremailid +
-                ", useremail='" + useremail + '\'' +
-                ", users=" + users.getUsername() +
+                "useremailid=" +
+                useremailid +
+                ", useremail='" +
+                useremail + '\'' +
+                ", user=" +
+                user.getUsername() +
                 '}';
     }
 }

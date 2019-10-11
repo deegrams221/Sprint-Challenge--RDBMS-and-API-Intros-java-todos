@@ -42,12 +42,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     @Bean
     public TokenStore tokenStore()
     {
-        return new InMemoryTokenStore(); //store our tokens in memory.
+        return new InMemoryTokenStore();
     }
 
     @Bean
     public PasswordEncoder encoder()
     {
-        return new BCryptPasswordEncoder(); //use BCrypt to encrypt our passwords
+        return new BCryptPasswordEncoder();
     }
 }

@@ -9,55 +9,58 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-// Users in considered the parent entity
+// User is considered the parent entity
+
+// USERS
+// userid primary key, not null long
+// username string, not null unique
+// primaryemail string, not null unique
+// password string, not null
+
 @Entity
 @Table(name = "users")
-public class Users extends Auditable
+public class User extends Auditable
 {
-    // USERS
-    //  userid primary key, not null long
-    //  username string, not null unique
-    //  primaryemail string, not null unique
-    //  password string, not null
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userid;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false,
+            unique = true)
     private String username;
 
-    @Column(nullable = false) // doesn't need 'unique = true', bc multiple users can have the same password
+    @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false,
+            unique = true)
     @Email
     private String primaryemail;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("users")
-    private List<UserRoles> userRoles = new ArrayList<>();
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
+    private List<UserRoles> userroles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("users")
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JsonIgnoreProperties("user")
     private List<Useremail> useremails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("users")
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("user")
     private List<Todo> todos = new ArrayList<>();
 
-    // default constructor
-    public Users()
+    public User()
     {
-
     }
 
-    // constructors
-    public Users(String username,
+    public User(String username,
                 String password,
                 String primaryemail,
                 List<UserRoles> userRoles)
@@ -67,12 +70,11 @@ public class Users extends Auditable
         this.primaryemail = primaryemail;
         for (UserRoles ur : userRoles)
         {
-            ur.setUsers(this);
+            ur.setUser(this);
         }
-        this.userRoles = userRoles;
+        this.userroles = userRoles;
     }
 
-    // getters and setters
     public long getUserid()
     {
         return userid;
@@ -81,16 +83,6 @@ public class Users extends Auditable
     public void setUserid(long userid)
     {
         this.userid = userid;
-    }
-
-    public List<Todo> getTodos()
-    {
-        return todos;
-    }
-
-    public void setTodos(List<Todo> todos)
-    {
-        this.todos = todos;
     }
 
     public String getUsername()
@@ -135,14 +127,14 @@ public class Users extends Auditable
         this.password = password;
     }
 
-    public List<UserRoles> getUserRoles()
+    public List<UserRoles> getUserroles()
     {
-        return userRoles;
+        return userroles;
     }
 
-    public void setUserRoles(List<UserRoles> userRoles)
+    public void setUserroles(List<UserRoles> userroles)
     {
-        this.userRoles = userRoles;
+        this.userroles = userroles;
     }
 
     public List<Useremail> getUseremails()
@@ -160,10 +152,10 @@ public class Users extends Auditable
     {
         List<SimpleGrantedAuthority> rtnList = new ArrayList<>();
 
-        for (UserRoles r : this.userRoles)
+        for (UserRoles r : this.userroles)
         {
-            String myRole = "ROLE_" + r.getRoles()
-                    .getRolename()
+            String myRole = "ROLE_" + r.getRole()
+                    .getName()
                     .toUpperCase();
             rtnList.add(new SimpleGrantedAuthority(myRole));
         }
@@ -171,18 +163,25 @@ public class Users extends Auditable
         return rtnList;
     }
 
-    // toString
+    public List<Todo> getTodos()
+    {
+        return todos;
+    }
+
+    public void setTodos(List<Todo> todos)
+    {
+        this.todos = todos;
+    }
 
     @Override
-    public String toString() {
-        return "Users{" +
-                "userid=" + userid +
+    public String toString()
+    {
+        return "User{" + "userid=" + userid +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", primaryemail='" + primaryemail + '\'' +
-                ", userRoles=" + userRoles +
+                ", primaryEmail='" + primaryemail +
+                '\'' + ", userroles=" + userroles +
                 ", useremails=" + useremails +
-                ", todos=" + todos +
-                '}';
+                ", todos=" + todos + '}';
     }
 }

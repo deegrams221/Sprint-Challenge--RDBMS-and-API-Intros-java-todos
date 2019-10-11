@@ -4,17 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
+// TODO
+// todoid primary key, not null long
+// description string, not null
+// datestarted datetime
+// completed boolean
+// userid foreign key (one user to many todos) not null
+
 @Entity
-@Table(name = "todo")
+@Table(name = "todos")
 public class Todo extends Auditable
 {
-    // TODOs
-    //  todoid primary key, not null long
-    //  description string, not null
-    //  datestarted datetime
-    //  completed boolean
-    //  userid foreign key (one user to many todos) not null
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long todoid;
@@ -22,31 +24,29 @@ public class Todo extends Auditable
     @Column(nullable = false)
     private String description;
 
-    private Date datestrated;
+    @Temporal(TIMESTAMP)
+    private Date datestarted;
+
     private boolean completed;
 
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "userid",
+            nullable = false)
     @JsonIgnoreProperties("todos")
-    private Users users;
+    private User user;
 
-    // default constructor
     public Todo()
     {
-
     }
 
-    // constructors
-    public Todo(String description,
-                Date datestrated,
-                Users users)
+    public Todo(String description, Date datestarted, User user)
     {
         this.description = description;
-        this.datestrated = datestrated;
-        this.users = users;
+        this.datestarted = datestarted;
+        completed = false;
+        this.user = user;
     }
 
-    // getters and setters
     public long getTodoid()
     {
         return todoid;
@@ -67,14 +67,14 @@ public class Todo extends Auditable
         this.description = description;
     }
 
-    public Date getDatestrated()
+    public Date getDatestarted()
     {
-        return datestrated;
+        return datestarted;
     }
 
-    public void setDatestrated(Date datestrated)
+    public void setDatestarted(Date datestarted)
     {
-        this.datestrated = datestrated;
+        this.datestarted = datestarted;
     }
 
     public boolean isCompleted()
@@ -87,13 +87,13 @@ public class Todo extends Auditable
         this.completed = completed;
     }
 
-    public Users getUsers()
+    public User getUser()
     {
-        return users;
+        return user;
     }
 
-    public void setUsers(Users users)
+    public void setUser(User user)
     {
-        this.users = users;
+        this.user = user;
     }
 }

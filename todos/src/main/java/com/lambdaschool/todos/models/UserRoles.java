@@ -6,80 +6,86 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+// USERROLES
+// roleid foreign key to role
+// userid foreign key to user
+
 @Entity
-@Table(name = "userroles")
+@Table(name = "userroles",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"userid", "roleid"})})
 public class UserRoles extends Auditable implements Serializable
 {
-    // USERROLES
-    //  roleid foreign key to role
-    //  userid foreign key to user
-
     @Id
     @ManyToOne
-    @JsonIgnoreProperties({"userRoles", "hibernateLazyInitializer"})
     @JoinColumn(name = "userid")
-    private Users users;
+    @JsonIgnoreProperties("userroles")
+    private User user;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "roleid")
-    @JsonIgnoreProperties({"userRoles", "hibernateLazyInitializer"})
-    private Roles roles;
+    @JsonIgnoreProperties("userroles")
+    private Role role;
 
-    // default constructor
     public UserRoles()
     {
-
     }
 
-    // constructors
-    public UserRoles(Users users, Roles roles)
+    public UserRoles(User user,
+                     Role role)
     {
-        this.users = users;
-        this.roles = roles;
+        this.user = user;
+        this.role = role;
     }
 
-    // getters and setters
-    public Users getUsers()
+    public User getUser()
     {
-        return users;
+        return user;
     }
 
-    public void setUsers(Users users)
+    public void setUser(User user)
     {
-        this.users = users;
+        this.user = user;
     }
 
-    public Roles getRoles()
+    public Role getRole()
     {
-        return roles;
+        return role;
     }
 
-    public void setRoles(Roles roles)
+    public void setRole(Role role)
     {
-        this.roles = roles;
-    }
-
-    // override methods - hashcode and boolean
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(getUsers(), getRoles());
+        this.role = role;
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object o)
     {
-        if(this == obj)
+        if (this == o)
         {
             return true;
         }
-        if(!(obj instanceof UserRoles))
+        if (!(o instanceof UserRoles))
         {
             return false;
         }
-        UserRoles userRoles = (UserRoles) obj;
-        return getUsers().equals(userRoles.getUsers()) &&
-                getRoles().equals(userRoles.getRoles());
+        UserRoles userRoles = (UserRoles) o;
+        return getUser().equals(userRoles.getUser()) && getRole().equals(userRoles.getRole());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getUser(),
+                getRole());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "UserRoles{" + "user=" +
+                user.getUserid() +
+                ", role=" +
+                role.getRoleid() + '}';
     }
 }
