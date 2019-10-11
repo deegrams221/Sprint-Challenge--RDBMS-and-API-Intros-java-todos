@@ -36,6 +36,10 @@ public class Useremail extends Auditable
         this.users = users;
     }
 
+    public Useremail(Users newUser, String useremail) {
+        super();
+    }
+
     // getters and setters
     public long getUseremailid()
     {
@@ -68,7 +72,6 @@ public class Useremail extends Auditable
     }
 
     // toString
-
     @Override
     public String toString()
     {
