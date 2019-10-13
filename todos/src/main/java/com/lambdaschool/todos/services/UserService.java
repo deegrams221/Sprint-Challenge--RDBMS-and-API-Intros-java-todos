@@ -2,11 +2,7 @@ package com.lambdaschool.todos.services;
 
 import com.lambdaschool.todos.models.User;
 
-import java.util.List;
-
 public interface UserService {
-
-    List<User> findAll();
 
     User findUserByName(String name);
 
@@ -16,5 +12,5 @@ public interface UserService {
 
     User save(User user);
 
-    User update(User user, long id);
+    User update(User user, long id, boolean isAdmin);
 }

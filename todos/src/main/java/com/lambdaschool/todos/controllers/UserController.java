@@ -9,17 +9,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
 
+    // localhost:2019/
     // GET /users/mine - return the user and todo based off of the authenticated user.
     //  You can only look up your own. It is okay if this also lists the users roles and authorities.
-    @GetMapping(value = "/users/mine", produces = {"application/json"})
+    @GetMapping(value = "/mine", produces = {"application/json"})
     public ResponseEntity<?> getUsername(Authentication authentication)
     {
         return new ResponseEntity<>(userService.findUserByName(authentication.getName()), HttpStatus.OK);
@@ -49,7 +52,7 @@ public class UserController {
     //    ]
     //}
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    @PostMapping(value = "/users/user", consumes = {"application/json"}, produces = {"application/json"})
+    @PostMapping(value = "/user", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
     {
         newuser =  userService.save(newuser);
@@ -63,23 +66,21 @@ public class UserController {
 //        "description": "Have Fun",
 //            "datestarted": "2019-01-01T01:00"
 //    }
-    @PutMapping(value = "/users/todo/{userid}",
+    @PutMapping(value = "/todo/{userid}",
             produces = {"application/json"},
             consumes = {"application/json"})
-    public ResponseEntity<?> addTodoToUser(
-            @RequestBody
-                    User newUserData,
-            @PathVariable
-                    long userid) throws URISyntaxException
+    public ResponseEntity<?> addTodoToUser(HttpServletRequest request,
+                                           @RequestBody User newUserData,
+                                           @PathVariable long userid) throws URISyntaxException
     {
-        userService.update(newUserData, userid);
+        userService.update(newUserData, userid, request.isUserInRole("ADMIN"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 //    DELETE /users/userid/{userid} - Deletes a user based off of their userid and deletes
 //    all their associated todos. Can only be done by an admin.
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    @DeleteMapping(value = "/users/userid/{userid}",
+    @DeleteMapping(value = "/userid/{userid}",
             produces = {"application/json"})
     public ResponseEntity<?> deleteUser(@PathVariable long userid)
     {

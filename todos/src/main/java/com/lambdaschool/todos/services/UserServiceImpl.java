@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 @Service(value = "userService")
@@ -28,18 +27,6 @@ public class UserServiceImpl implements UserDetailsService,
     @Autowired
     private RoleRepository rolerepos;
 
-    @Autowired
-    private TodoRepository todorepos;
-
-    public Todo addTodo(Todo todo)
-    {
-        Todo newTodo = new Todo();
-
-        newTodo.setDescription(todo.getDescription());
-        newTodo.setDatestarted(todo.getDatestarted());
-
-        return todorepos.save(newTodo);
-    }
 
     @Transactional
     @Override
@@ -61,25 +48,14 @@ public class UserServiceImpl implements UserDetailsService,
                 .orElseThrow(() -> new EntityNotFoundException("User id " + id + " not found!"));
     }
 
-
-    public List<User> findByNameContaining(String username)
-    {
-        return userrepos.findByUsernameContainingIgnoreCase(username.toUpperCase());
-    }
-
-    @Override
-    public List<User> findAll()
-    {
-        List<User> list = new ArrayList<>();
-        userrepos.findAll()
-                .iterator()
-                .forEachRemaining(list::add);
-        return list;
-    }
-
     @Override
     public User findUserByName(String name) {
-        return null;
+        User uu = userrepos.findByUsername(name.toLowerCase());
+        if (uu == null)
+        {
+            throw new EntityNotFoundException("User name " + name + " not found!");
+        }
+        return uu;
     }
 
     @Transactional
@@ -89,17 +65,6 @@ public class UserServiceImpl implements UserDetailsService,
         userrepos.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User id " + id + " not found!"));
         userrepos.deleteById(id);
-    }
-
-
-    public User findByName(String name)
-    {
-        User uu = userrepos.findByUsername(name.toLowerCase());
-        if (uu == null)
-        {
-            throw new EntityNotFoundException("User name " + name + " not found!");
-        }
-        return uu;
     }
 
     @Transactional
@@ -138,13 +103,8 @@ public class UserServiceImpl implements UserDetailsService,
         return userrepos.save(newUser);
     }
 
-    @Override
-    public User update(User user, long id) {
-        return null;
-    }
-
     @Transactional
-
+    @Override
     public User update(User user,
                        long id,
                        boolean isAdmin)
@@ -193,51 +153,7 @@ public class UserServiceImpl implements UserDetailsService,
             return userrepos.save(currentUser);
         } else
         {
-            throw new EntityNotFoundException(id + " Not current user");
-        }
-    }
-
-    @Transactional
-
-    public void deleteUserRole(long userid,
-                               long roleid)
-    {
-        userrepos.findById(userid)
-                .orElseThrow(() -> new EntityNotFoundException("User id " + userid + " not found!"));
-        rolerepos.findById(roleid)
-                .orElseThrow(() -> new EntityNotFoundException("Role id " + roleid + " not found!"));
-
-        if (rolerepos.checkUserRolesCombo(userid,
-                roleid)
-                .getCountTodos() > 0)
-        {
-            rolerepos.deleteUserRoles(userid,
-                    roleid);
-        } else
-        {
-            throw new EntityNotFoundException("Role and User Combination Does Not Exists");
-        }
-    }
-
-    @Transactional
-
-    public void addUserRole(long userid,
-                            long roleid)
-    {
-        userrepos.findById(userid)
-                .orElseThrow(() -> new EntityNotFoundException("User id " + userid + " not found!"));
-        rolerepos.findById(roleid)
-                .orElseThrow(() -> new EntityNotFoundException("Role id " + roleid + " not found!"));
-
-        if (rolerepos.checkUserRolesCombo(userid,
-                roleid)
-                .getCountTodos() <= 0)
-        {
-            rolerepos.insertUserRoles(userid,
-                    roleid);
-        } else
-        {
-            throw new EntityNotFoundException("Role and User Combination Already Exists");
+            throw new EntityNotFoundException(id + " Not a current user");
         }
     }
 }
