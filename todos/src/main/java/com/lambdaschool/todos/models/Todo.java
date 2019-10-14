@@ -1,6 +1,5 @@
 package com.lambdaschool.todos.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -32,7 +31,7 @@ public class Todo extends Auditable
     @ManyToOne
     @JoinColumn(name = "userid",
             nullable = false)
-    @JsonIgnoreProperties("todos")
+   // @JsonIgnoreProperties("todos")
     private User user;
 
     public Todo()
@@ -43,8 +42,8 @@ public class Todo extends Auditable
     {
         this.description = description;
         this.datestarted = datestarted;
-        completed = false;
         this.user = user;
+        completed = false;
     }
 
     public long getTodoid()

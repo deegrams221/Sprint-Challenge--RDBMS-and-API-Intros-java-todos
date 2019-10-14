@@ -1,17 +1,19 @@
-package com.lambdaschool.todos.controllers;
+package com.lambdaschool.todos.controller;
 
 import com.lambdaschool.todos.models.Todo;
+import com.lambdaschool.todos.models.User;
 import com.lambdaschool.todos.services.TodoService;
+import com.lambdaschool.todos.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class TodoController {
+@RequestMapping("/todos")
+public class TodoController
+{
 
     @Autowired
     private TodoService todoService;
@@ -21,13 +23,21 @@ public class TodoController {
 //    {
 //        "completed": true
 //    }
-    @PutMapping(value = "/todos/todoid/{todoid}",
-            produces = {"application/json"},
-            consumes = {"application/json"})
-    public ResponseEntity<?> updateTodo(@RequestBody Todo updatedTodo, @PathVariable long todoid)
-    {
-        todoService.update(updatedTodo, todoid);
+    @PutMapping(value = "/todoid/{todoid}",
+        consumes = {"application/json"})
+    public ResponseEntity<?> updateTodo(Authentication authentication,
+                                    @RequestBody Todo todo,
+                                    @PathVariable long todoid) {
+        todoService.updateTodo(todo, todoid);
         return new ResponseEntity<>("UPDATE SUCCESS", HttpStatus.OK);
     }
 
+    // GET /todos/todos
+    // get all todos
+    @GetMapping(value = "/todos",
+            produces = {"application/json"})
+    public ResponseEntity<?> getAllTodos()
+    {
+        return new ResponseEntity<>(todoService.findAllTodos(), HttpStatus.OK);
+    }
 }

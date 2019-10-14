@@ -5,17 +5,20 @@ import com.lambdaschool.todos.models.Todo;
 import com.lambdaschool.todos.repositories.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @Service(value = "todoService")
 public class TodoServiceImpl implements TodoService
 {
     @Autowired
     private TodoRepository todorepos;
 
+    @Transactional
     @Override
     public Todo updateTodo(Todo todo, long todoid)
     {
@@ -31,14 +34,9 @@ public class TodoServiceImpl implements TodoService
             currentTodo.setDescription(todo.getDescription());
         }
 
-        if (todo.getUser() != null)
-        {
-            currentTodo.setUser(todo.getUser());
-        }
-
         currentTodo.setCompleted(todo.isCompleted());
 
-        return todorepos.save(todo);
+        return todorepos.save(currentTodo);
     }
 
     @Override
@@ -49,30 +47,5 @@ public class TodoServiceImpl implements TodoService
         todorepos.findAll().iterator().forEachRemaining(rtnList::add);
 
         return rtnList;
-    }
-
-    @Override
-    public Todo findtodoById(long id) {
-        return null;
-    }
-
-    @Override
-    public Todo findtodoByName(String name) {
-        return null;
-    }
-
-    @Override
-    public void delete(long id) {
-
-    }
-
-    @Override
-    public Todo save(Todo todo) {
-        return null;
-    }
-
-    @Override
-    public Todo update(Todo todo, long id) {
-        return null;
     }
 }
